@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARENA ESPORTS | Free Fire MAX Solo Tournaments</title>
+  <meta name="description" content="ARENA ESPORTS runs competitive Free Fire MAX solo tournaments. Register in minutes.">
+  <style>
+    /* ============ BASE ============ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0d12;
+      --bg-2: #11141b;
+      --card: #161a23;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f1f1f4;
+      --muted: #9aa1b2;
+      --gold: #f5a524;
+      --gold-2: #ffbf4d;
+      --cyan: #22d3ee;
+      --error: #ff5a6a;
+      --success: #3ddc84;
+      --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: var(--gold); text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ============ NAVBAR ============ */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 6%;
+      background: rgba(11, 13, 18, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: 1px; color: var(--text); }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; align-items: center; gap: 22px; }
+    .nav-links a { color: var(--text); font-weight: 500; font-size: 0.95rem; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+    .menu-toggle {
+      display: none; background: none; color: var(--gold);
+      border: 1px solid var(--gold); border-radius: 8px;
+      font-size: 1.3rem; padding: 2px 12px; cursor: pointer;
+    }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-block; padding: 12px 24px; border-radius: 8px;
+      font-weight: 700; font-size: 0.95rem; border: 2px solid transparent;
+      cursor: pointer; text-align: center; font-family: inherit;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--gold), var(--gold-2));
+      color: #120d00;
+      box-shadow: 0 0 18px rgba(245, 165, 36, 0.35);
+    }
+    .btn-outline { background: transparent; border-color: var(--gold); color: var(--gold); }
+    .btn-small { padding: 8px 14px; font-size: 0.85rem; }
+    .btn-full { width: 100%; }
+
+    /* ============ TICKER ============ */
+    .ticker {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--line);
+      padding: 8px 6%;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker strong { color: var(--gold); }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 80vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 70px 6%;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(245, 165, 36, 0.14), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.10), transparent 40%),
+        var(--bg);
+    }
+    .hero-content { max-width: 780px; }
+    .eyebrow {
+      display: inline-block;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 900; line-height: 1.1; margin: 18px 0;
+    }
+    .gold-text { color: var(--gold); text-shadow: 0 0 14px rgba(245, 165, 36, 0.4); }
+    .hero-text { color: var(--muted); font-size: 1.05rem; max-width: 620px; margin: 0 auto 28px; }
+    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .trust-row {
+      display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;
+      margin-top: 36px; color: var(--muted); font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ============ SECTIONS ============ */
+    .section { padding: 80px 6%; }
+    .section-alt { background: var(--bg-2); }
+    .section-header { text-align: center; margin-bottom: 44px; }
+    .kicker {
+      color: var(--gold); text-transform: uppercase;
+      letter-spacing: 2px; font-size: 0.78rem; font-weight: 700;
+    }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 8px 0; line-height: 1.2; }
+    .section-subtitle { color: var(--muted); max-width: 640px; margin: 0 auto; }
+
+    /* ============ TOURNAMENT CARD ============ */
+    .tournament-card {
+      max-width: 620px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .tournament-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 24px rgba(245, 165, 36, 0.18);
+    }
+    .tournament-image {
+      height: 220px;
+      background:
+        linear-gradient(180deg, transparent 40%, rgba(22, 26, 35, 1)),
+        radial-gradient(circle at 30% 40%, rgba(245, 165, 36, 0.35), transparent 50%),
+        linear-gradient(135deg, #1e2430, #0b0d12);
+      position: relative;
+    }
+    .tag {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(11, 13, 18, 0.8);
+      border: 1px solid var(--gold); color: var(--gold);
+      padding: 4px 10px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    }
+    .tournament-body { padding: 24px; }
+    .tournament-body h3 { font-size: 1.5rem; margin-bottom: 14px; }
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 10px; padding: 14px; margin-bottom: 16px;
+    }
+    .info-label {
+      font-size: 0.7rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .info-value { font-weight: 700; }
+    .info-value.price { color: var(--gold); font-size: 1.2rem; }
+    .tournament-body p.note { color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; }
+
+    /* ============ GAME CARD ============ */
+    .game-card {
+      max-width: 760px; margin: 0 auto;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .game-image {
+      height: 300px;
+      background:
+        linear-gradient(180deg, transparent 30%, var(--card)),
+        radial-gradient(circle at 70% 30%, rgba(34, 211, 238, 0.25), transparent 45%),
+        linear-gradient(135deg, #222a38, #0b0d12);
+    }
+    .game-body { padding: 26px; }
+    .game-body h3 { font-size: 1.8rem; margin: 10px 0; }
+    .game-body p { color: var(--muted); }
+
+    /* ============ ABOUT ============ */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+      align-items: center; max-width: 1100px; margin: 0 auto;
+    }
+    .about-visual {
+      height: 380px; border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 40%, rgba(245, 165, 36, 0.25), transparent 55%),
+        linear-gradient(135deg, #1a2030, #0b0d12);
+    }
+    .feature-row {
+      display: flex; gap: 16px; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 18px; margin-bottom: 14px;
+    }
+    .feature-icon {
+      flex-shrink: 0; width: 40px; height: 40px;
+      border: 1px solid var(--gold); color: var(--gold);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+    }
+    .feature-row h4 { font-size: 1rem; margin-bottom: 4px; }
+    .feature-row p { color: var(--muted); font-size: 0.9rem; }
+
+    /* ============ STEPS ============ */
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .step-card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 28px;
+    }
+    .step-number {
+      font-size: 2.6rem; font-weight: 900; color: var(--gold);
+      line-height: 1; margin-bottom: 14px;
+    }
+    .step-card h3 { font-size: 1.15rem; margin-bottom: 10px; text-transform: uppercase; }
+    .step-card p { color: var(--muted); font-size: 0.92rem; }
+
+    /* ============ PRIZE ============ */
+    .prize-box {
+      max-width: 760px; margin: 0 auto; text-align: center;
+      background: var(--card); border: 1px dashed var(--gold);
+      border-radius: var(--radius); padding: 36px 24px;
+    }
+    .prize-box h3 { font-size: 1.4rem; margin-bottom: 10px; }
+    .prize-box p { color: var(--muted); }
+
+    /* ============ REGISTRATION FORM ============ */
+    .register-wrap { max-width: 640px; margin: 0 auto; }
+    .register-form {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 32px;
+      box-shadow: 0 0 30px rgba(245, 165, 36, 0.06);
+    }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 18px; }
+    .form-group label { font-weight: 600; font-size: 0.92rem; margin-bottom: 6px; }
+    .form-group input {
+      background: var(--bg); color: var(--text);
+      border: 1px solid #2a3040; border-radius: 8px;
+      padding: 12px 14px; font-size: 1rem; font-family: inherit;
+    }
+    .form-group input:focus {
+      outline: none; border-color: var(--gold);
+      box-shadow: 0 0 10px rgba(245, 165, 36, 0.25);
+    }
+    .form-group input.invalid { border-color: var(--error); }
+    .field-error { color: var(--error); font-size: 0.82rem; min-height: 18px; margin-top: 4px; }
+    .form-message {
+      margin-top: 18px; padding: 14px 16px; border-radius: 8px;
+      font-weight: 600; display: none;
+    }
+    .form-message.show { display: block; }
+    .form-message.success { background: rgba(61, 220, 132, 0.12); border: 1px solid var(--success); color: var(--success); }
+    .form-message.error { background: rgba(255, 90, 106, 0.12); border: 1px solid var(--error); color: var(--error); }
+    .form-message.info { background: rgba(34, 211, 238, 0.08); border: 1px solid var(--cyan); color: var(--cyan); }
+    .spinner {
+      width: 16px; height: 16px; display: inline-block;
+      border: 2px solid rgba(18, 13, 0, 0.3); border-top-color: #120d00;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .form-hint { color: var(--muted); font-size: 0.85rem; margin-top: 14px; text-align: center; }
+
+    /* ============ PAYMENT ============ */
+    .payment-box {
+      max-width: 640px; margin: 0 auto; text-align: center;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 32px 24px;
+    }
+    .payment-box h3 { font-size: 1.4rem; margin-bottom: 8px; }
+    .payment-box .price { color: var(--gold); font-size: 1.8rem; font-weight: 900; margin: 10px 0; }
+    .payment-box p { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+    .payment-box .btn { display: inline-block; min-width: 220px; }
+
+    /* ============ COMMUNITY ============ */
+    .community-box {
+      max-width: 900px; margin: 0 auto; text-align: center;
+      background: linear-gradient(135deg, rgba(245, 165, 36, 0.12), rgba(34, 211, 238, 0.06)), var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 48px 28px;
+    }
+    .community-box h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 10px 0; }
+    .community-box p { color: var(--muted); margin-bottom: 26px; }
+    .social-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .social-btn {
+      padding: 10px 20px; border-radius: 8px; font-weight: 700;
+      color: #fff; font-size: 0.9rem;
+    }
+    .social-discord { background: #5865f2; }
+    .social-whatsapp { background: #25d366; color: #05150a; }
+    .social-instagram { background: linear-gradient(90deg, #f58529, #dd2a7b, #8134af); }
+
+    /* ============ FAQ ============ */
+    .faq-wrap { max-width: 760px; margin: 0 auto; }
+    .faq-item {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+    }
+    .faq-question {
+      width: 100%; background: none; border: none; color: var(--text);
+      padding: 18px 20px; font-size: 1rem; font-weight: 600; font-family: inherit;
+      text-align: left; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-question .arrow { color: var(--gold); transition: transform 0.2s; }
+    .faq-item.open .arrow { transform: rotate(180deg); }
+    .faq-answer { display: none; padding: 0 20px 18px; color: var(--muted); font-size: 0.95rem; }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* ============ FOOTER ============ */
+    .footer {
+      background: var(--bg-2); border-top: 1px solid var(--line);
+      padding: 56px 6% 28px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 36px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .footer h4 {
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .footer p, .footer li { color: var(--muted); font-size: 0.9rem; }
+    .footer ul { list-style: none; }
+    .footer li { margin-bottom: 8px; }
+    .footer a { color: var(--muted); }
+    .footer a:hover { color: var(--gold); }
+    .footer-bottom {
+      text-align: center; color: var(--muted); font-size: 0.82rem;
+      margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 900px) {
+      .steps-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      .nav-links {
+        position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column; gap: 16px; padding: 20px 6%;
+        background: var(--bg-2); border-bottom: 1px solid var(--line);
+        display: none;
+      }
+      .nav-links.open { display: flex; }
+      .nav-actions .btn { display: none; }
+      .info-grid { grid-template-columns: 1fr; }
+      .register-form { padding: 22px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .hero { min-height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <a href="#home" class="logo">ARENA<span>ESPORTS</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#tournaments">Tournaments</a>
+      <a href="#games">Games</a>
+      <a href="#about">About</a>
+      <a href="#payment">Payment</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#register" class="btn btn-primary btn-small">Join Now</a>
+    </div>
+  </header>
+
+  <!-- ================= TICKER ================= -->
+  <div class="ticker" aria-label="Announcements">
+    <strong>Solo registration open</strong> &nbsp;&bull;&nbsp; Free Fire MAX solo tournaments &nbsp;&bull;&nbsp; Entry fee &#8377;50 per player &nbsp;&bull;&nbsp; Register below
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <span class="eyebrow">Free Fire MAX &middot; Solo Tournaments</span>
+      <h1>ENTER THE <span class="gold-text">ARENA.</span><br>PROVE YOUR SKILLS.</h1>
+      <p class="hero-text">
+        Join high-speed, validated Free Fire MAX solo tournaments with a &#8377;50 solo entry fee.
+        Register in a few steps and get ready for the lobby.
+      </p>
+      <div class="hero-buttons">
+        <a href="#register" class="btn btn-primary">Join the Tournament</a>
+        <a href="#tournaments" class="btn btn-outline">Explore Arena</a>
+      </div>
+      <div class="trust-row">
+        <span>Solo format</span>
+        <span>&#8377;50 per player</span>
+        <span>Custom room keys</span>
+        <span>Anti-cheat rules</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TOURNAMENTS ================= -->
+  <section class="section" id="tournaments">
+    <div class="section-header">
+      <p class="kicker">Choose your arena</p>
+      <h2 class="section-title">UPCOMING <span class="gold-text">TOURNAMENT</span></h2>
+      <p class="section-subtitle">Solo Free Fire MAX match. Check the details below, then register.</p>
+    </div>
+
+    <article class="tournament-card">
+      <div class="tournament-image">
+        <span class="tag">Open</span>
+      </div>
+      <div class="tournament-body">
+        <h3>Firestorm Solo Showdown</h3>
+        <div class="info-grid">
+          <div>
+            <div class="info-label">Format</div>
+            <div class="info-value">Solo (1 person)</div>
+          </div>
+          <div>
+            <div class="info-label">Entry fee</div>
+            <div class="info-value price">&#8377;50 / Player</div>
+          </div>
+        </div>
+        <p class="note">Event date, time and prize details will be shared by the organizer. Confirm the name before you register.</p>
+        <a href="#register" class="btn btn-primary btn-full">Register One Tap</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= GAMES ================= -->
+  <section class="section section-alt" id="games">
+    <div class="section-header">
+      <p class="kicker">Find your game</p>
+      <h2 class="section-title">YOUR GAME. <span class="gold-text">YOUR RULES.</span></h2>
+      <p class="section-subtitle">Competitive solo lobbies for Free Fire MAX players.</p>
+    </div>
+
+    <article class="game-card">
+      <div class="game-image"></div>
+      <div class="game-body">
+        <span class="badge tag" style="position:static; display:inline-block;">Now live</span>
+        <h3>FREE FIRE MAX</h3>
+        <p>High-speed solo battle royale showdowns with instant single-player eliminations, &#8377;50 solo entry fees, and custom room keys.</p>
+        <br>
+        <a href="#tournaments" class="btn btn-outline btn-small">View Tournaments</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="section" id="about">
+    <div class="about-grid">
+      <div>
+        <div class="about-visual" role="img" aria-label="ARENA ESPORTS event visual"></div>
+      </div>
+      <div>
+        <p class="kicker">Built by gamers</p>
+        <h2 class="section-title">MORE THAN GAMING. <span class="gold-text">IT'S A COMPETITION.</span></h2>
+        <p class="section-subtitle" style="text-align:left; margin:0 0 26px;">
+          ARENA ESPORTS brings players together through competitive Free Fire MAX gaming events
+          designed to challenge skills, build reputations, and create memorable matches.
+          Whether you are entering your first solo lobby or chasing your next win, ARENA ESPORTS is built for serious competitors.
+        </p>
+
+        <div class="feature-row">
+          <div class="feature-icon">&#9733;</div>
+          <div>
+            <h4>Competitive Solo Tournaments</h4>
+            <p>Solo-only formats with structured match timing and clear rules.</p>
+          </div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon">&#10003;</div>
+          <div>
+            <h4>Fair &amp; Transparent Process</h4>
+            <p>Anti-cheat guidelines are published, and every player is expected to follow them.</p>
+          </div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon">&#9830;</div>
+          <div>
+            <h4>A Growing Free Fire MAX Community</h4>
+            <p>Connect with other players through our community channels below.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEPS ================= -->
+  <section class="section section-alt" id="steps">
+    <div class="section-header">
+      <p class="kicker">How it works</p>
+      <h2 class="section-title">THREE STEPS. <span class="gold-text">ONE ARENA.</span></h2>
+      <p class="section-subtitle">Sign up, pick your tournament, and confirm your registration.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <h3>Create your account</h3>
+        <p>Sign up, link your Free Fire MAX IGN and player UID, and get ready for competitive solo matches.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <h3>Choose your tournament</h3>
+        <p>Explore available Free Fire MAX solo tournaments, review the anti-cheat rules, and pick your match.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <h3>Confirm your registration</h3>
+        <p>Pay &#8377;50 per solo slot via UPI, submit the registration form, and wait for your match details.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRIZE POOL ================= -->
+  <section class="section" id="prizes">
+    <div class="section-header">
+      <p class="kicker">Rewards</p>
+      <h2 class="section-title">PRIZE <span class="gold-text">POOL</span></h2>
+    </div>
+    <div class="prize-box">
+      <h3>Prize details coming soon</h3>
+      <p>The organizer will publish the prize pool and payout details for each tournament here.</p>
+    </div>
+  </section>
+
+  <!-- ================= REGISTRATION ================= -->
+  <section class="section section-alt" id="register">
+    <div class="section-header">
+      <p class="kicker">Player registration</p>
+      <h2 class="section-title">REGISTER FOR <span class="gold-text">THE ARENA</span></h2>
+      <p class="section-subtitle">All three fields are required.</p>
+    </div>
+
+    <div class="register-wrap">
+      <form id="registrationForm" class="register-form" novalidate>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" maxlength="100" placeholder="Your full name" autocomplete="name">
+          <small class="field-error" id="nameError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" maxlength="254" placeholder="you@example.com" autocomplete="email">
+          <small class="field-error" id="emailError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" maxlength="20" placeholder="+91 98765 43210" autocomplete="tel">
+          <small class="field-error" id="phoneError"></small>
+        </div>
+
+        <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">Submit Registration</button>
+
+        <p class="form-hint">Paid your &#8377;50 entry fee? Submit this form too, so we can match your registration.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= PAYMENT ================= -->
+  <section class="section" id="payment">
+    <div class="section-header">
+      <p class="kicker">Entry fee</p>
+      <h2 class="section-title">COMPLETE YOUR <span class="gold-text">PAYMENT</span></h2>
+    </div>
+
+    <div class="payment-box">
+      <h3>Solo entry fee</h3>
+      <div class="price">&#8377;50 / Player</div>
+      <p>
+        Click the button below to open the secure payment page. Your card or UPI details are entered
+        on the payment provider's page, not on this website.
+        Clicking the button does not mean your payment is complete. Please keep your payment receipt.
+      </p>
+      <a href="https://payments.cashfree.com/forms/getaudit" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Pay Now</a>
+    </div>
+  </section>
+
+  <!-- ================= COMMUNITY ================= -->
+  <section class="section section-alt">
+    <div class="community-box">
+      <p class="kicker">Join the community</p>
+      <h2>JOIN THE COMMUNITY. <span class="gold-text">OWN THE MATCH.</span></h2>
+      <p>Connect with fellow Free Fire MAX players, get updates, and talk strategy.</p>
+      <div class="social-buttons">
+        <!-- TODO: replace # below with your Discord invite link (https://discord.gg/...) -->
+        <a href="#" class="social-btn social-discord" target="_blank" rel="noopener noreferrer">Join Our Discord</a>
+        <a href="https://chat.whatsapp.com/FaNb6No5Q92CqC5rL9IM7p" class="social-btn social-whatsapp" target="_blank" rel="noopener noreferrer">Join Our WhatsApp Community</a>
+        <a href="#" class="social-btn social-instagram">Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="section" id="faq">
+    <div class="section-header">
+      <p class="kicker">Questions</p>
+      <h2 class="section-title">QUESTIONS BEFORE <span class="gold-text">THE MATCH?</span></h2>
+    </div>
+
+    <div class="faq-wrap">
+      <div class="faq-item open">
+        <button class="faq-question" type="button">How do I register for a tournament? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">Fill in the registration form above with your name, email and phone number, then press Submit Registration.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" type="button">How do I pay the &#8377;50 entry fee? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">Use the Pay Now button in the payment section. Keep your payment receipt.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" type="button">How will my payment be verified? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">[Answer to be provided by the organizer.]</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" type="button">Can I participate as a solo player? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">Yes. The tournaments on this site are solo formats for one player per entry.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" type="button">How do I receive tournament details? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">[Answer to be provided by the organizer.]</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" type="button">What happens if a tournament is cancelled? <span class="arrow">&#9662;</span></button>
+        <div class="faq-answer">[Answer to be provided by the organizer.]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="logo">ARENA<span>ESPORTS</span></div>
+        <p style="margin-top:12px;">Competitive Free Fire MAX solo tournaments, built for serious players.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#tournaments">Tournaments</a></li>
+          <li><a href="#games">Games</a></li>
+          <li><a href="#register">Registration</a></li>
+          <li><a href="#payment">Payment</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Community</h4>
+        <ul>
+          <li><a href="#" target="_blank" rel="noopener noreferrer">Join Our Discord</a></li>
+          <li><a href="https://chat.whatsapp.com/FaNb6No5Q92CqC5rL9IM7p" target="_blank" rel="noopener noreferrer">Join Our WhatsApp Community</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>For tournament partnerships &amp; sponsorships:</li>
+          <li><a href="mailto:ops@arenaesports.gg">ops@arenaesports.gg</a></li>
+          <li>Server regions: Asia (Mumbai) / SEA (Singapore)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 ARENA ESPORTS. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // ============================================================
+    // SETTINGS
+    // Your Google Apps Script Web App URL (must end in /exec).
+    // ============================================================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrm0gw7P6KFbGt4dOCF5Oag1urgpZYLp5PDqlVsO6yPMNyToJDv9jM6kT6HVkb3_PADA/exec';
+
+    // Stop waiting for the server after this many milliseconds
+    const TIMEOUT_MS = 20000;
+
+    // Simple email check (same rule as the backend)
+    const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // ============================================================
+    // ELEMENTS
+    // ============================================================
+    const form = document.getElementById('registrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    let isSubmitting = false;
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    menuToggle.addEventListener('click', function () {
+      const isOpen = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    navLinks.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ============================================================
+    // FAQ ACCORDION
+    // ============================================================
+    document.querySelectorAll('.faq-question').forEach(function (button) {
+      button.addEventListener('click', function () {
+        button.parentElement.classList.toggle('open');
+      });
+    });
+
+    // ============================================================
+    // VALIDATION
+    // ============================================================
+    function getValues() {
+      return {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim()
+      };
+    }
+
+    function validate(values) {
+      const errors = {};
+
+      if (values.name === '') {
+        errors.name = 'Name is required.';
+      } else if (values.name.length < 2) {
+        errors.name = 'Name must be at least 2 characters.';
+      }
+
+      if (values.email === '') {
+        errors.email = 'Email is required.';
+      } else if (values.email.length > 254 || !EMAIL_PATTERN.test(values.email)) {
+        errors.email = 'Please enter a valid email address.';
+      }
+
+      if (values.phone === '') {
+        errors.phone = 'Phone number is required.';
+      } else {
+        const digits = values.phone.replace(/\D/g, '');
+        if (!/^\+?[0-9\s\-()]+$/.test(values.phone) || digits.length < 7 || digits.length > 15) {
+          errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+        }
+      }
+
+      return errors;
+    }
+
+    function showErrors(errors) {
+      ['name', 'email', 'phone'].forEach(function (field) {
+        const input = document.getElementById(field);
+        const errorEl = document.getElementById(field + 'Error');
+        const message = errors[field] || '';
+        errorEl.textContent = message;
+        input.classList.toggle('invalid', message !== '');
+      });
+    }
+
+    // Clear a field's error as soon as the player edits it
+    ['name', 'email', 'phone'].forEach(function (field) {
+      document.getElementById(field).addEventListener('input', function () {
+        const errors = validate(getValues());
+        const input = document.getElementById(field);
+        const errorEl = document.getElementById(field + 'Error');
+        errorEl.textContent = errors[field] || '';
+        input.classList.toggle('invalid', Boolean(errors[field]));
+      });
+    });
+
+    // ============================================================
+    // MESSAGES AND LOADING STATE
+    // ============================================================
+    function showMessage(type, text) {
+      formMessage.textContent = text;
+      formMessage.className = 'form-message show ' + type;
+    }
+
+    function clearMessage() {
+      formMessage.textContent = '';
+      formMessage.className = 'form-message';
+    }
+
+    function setLoading(loading) {
+      isSubmitting = loading;
+      submitBtn.disabled = loading;
+      if (loading) {
+        submitBtn.innerHTML = '<span class="spinner"></span>Submitting, please wait...';
+      } else {
+        submitBtn.textContent = 'Submit Registration';
+      }
+    }
+
+    // ============================================================
+    // SEND TO GOOGLE APPS SCRIPT
+    // Uses a GET request with the details in the web address.
+    // No headers and no body are sent. The page reads the reply and
+    // shows success ONLY if the server says success: true.
+    // ============================================================
+    async function sendRegistration(values) {
+      const query = new URLSearchParams({
+        name: values.name,
+        email: values.email,
+        phone: values.phone
+      });
+      const url = SCRIPT_URL + '?' + query.toString();
+
+      const controller = new AbortController();
+      const timer = setTimeout(function () { controller.abort(); }, TIMEOUT_MS);
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          signal: controller.signal
+        });
+        const text = await response.text();
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          // Google sent a web page instead of JSON, usually a sign-in page
+          throw new Error('NOT_JSON');
+        }
+        return data;
+
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function friendlyError(error) {
+      if (error.name === 'AbortError') {
+        return 'The server took too long to reply. Check your connection and try again. Your details are still in the form.';
+      }
+      if (error.message === 'NOT_JSON') {
+        return 'The registration server did not confirm your registration. The server access may not be set to "Anyone". Your details are still in the form.';
+      }
+      if (error instanceof TypeError) {
+        return 'Could not reach the registration server. Check your internet connection and try again. Your details are still in the form.';
+      }
+      return 'Something went wrong. Please try again. Your details are still in the form.';
+    }
+
+    // ============================================================
+    // FORM SUBMIT
+    // ============================================================
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      // Block repeated clicks while a submission is running
+      if (isSubmitting) return;
+
+      clearMessage();
+      const values = getValues();
+      const errors = validate(values);
+      showErrors(errors);
+
+      if (Object.keys(errors).length > 0) {
+        showMessage('error', 'Please fix the highlighted fields and try again.');
+        return;
+      }
+
+      setLoading(true);
+      showMessage('info', 'Sending your registration...');
+
+      try {
+        const result = await sendRegistration(values);
+
+        if (result && result.success === true) {
+          // Only here is the registration confirmed by the server
+          showMessage('success', 'Registration successful! Your details have been saved. Keep your payment receipt handy.');
+          form.reset();
+          showErrors({});
+        } else {
+          const reason = (result && result.error) ? result.error : 'Your registration was not accepted.';
+          showMessage('error', reason + ' Your details are still in the form.');
+        }
+      } catch (error) {
+        console.error('Registration request failed:', error.name, error.message);
+        showMessage('error', friendlyError(error));
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
